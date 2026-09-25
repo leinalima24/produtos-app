@@ -4,6 +4,16 @@
 
 **Aluno(a):** Leina Lima
 
+## Sobre o produto
+
+O **Portátil** nasceu com a proposta de tornar o controle de estoque mais simples, prático e acessível.
+
+A ideia é permitir que pequenos negócios e empreendedores tenham as principais informações dos seus produtos sempre à mão, facilitando a organização e o acompanhamento do estoque no dia a dia.
+
+Nesta primeira versão, o Portátil concentra-se no gerenciamento básico de produtos. A proposta é evoluir gradualmente para uma solução mais completa, com controle de movimentações, categorias personalizadas, dashboards, indicadores e insights sobre o estoque.
+
+> **Portátil — seu estoque na palma da mão.**
+
 ## Sobre o sistema
 
 O **Portátil** é uma aplicação web para cadastro e consulta de produtos em estoque. A interface apresenta os produtos em uma tabela, com ações de cadastro, edição, visualização e exclusão.
