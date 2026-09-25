@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leinodutos · Gestão de Produtos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar__brand">
+      <img class="topbar__logo" src="assets/logo-portatil.svg" alt="Logo Portátil" />
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <!-- Painel de indicadores -->
+    <section class="stats" aria-label="Indicadores do estoque">
+      <div class="stat-card">
+        <span class="stat-card__label">Produtos cadastrados</span>
+        <span class="stat-card__value" id="statTotalProdutos">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">Itens em estoque</span>
+        <span class="stat-card__value" id="statTotalItens">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">Valor total do estoque</span>
+        <span class="stat-card__value" id="statValorTotal">R$ 0,00</span>
+      </div>
+    </section>
+
+    <div class="grid grid--lista">
+
+      <!-- Lista / tabela de produtos -->
+      <section class="painel painel--lista" aria-label="Lista de produtos">
+        <div class="lista__header">
+          <div class="lista__title-wrap">
+            <h2>Produtos</h2>
+          </div>
+
+          <div class="filtros">
+            <label class="filtro__campo filtro__campo--busca" aria-label="Pesquisar produtos">
+              <i data-lucide="search" class="filtro__icone" aria-hidden="true"></i>
+              <input type="search" id="busca" aria-label="Pesquisar produtos" placeholder="Pesquisar por nome..." />
+            </label>
+            <label class="filtro__campo filtro__campo--categoria" aria-label="Filtrar por categoria">
+              <svg class="filtro__icone" aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.0131 13.7227C13.073 13.08 13.3385 12.4706 13.7748 11.9883L20.9975 4H3.0004L10.225 11.9883C10.7236 12.5395 11.0001 13.2567 11.0004 14V20.001L12.9994 21L13.0004 14L13.0131 13.7227ZM15.0004 21L14.9965 21.127C14.9777 21.4236 14.8926 21.713 14.7475 21.9736C14.5816 22.2715 14.3421 22.5218 14.0522 22.7012C13.7622 22.8805 13.4308 22.9826 13.0902 22.998C12.7923 23.0115 12.4958 22.9584 12.2221 22.8428L12.1059 22.7891L10.1059 21.7891C9.77355 21.6229 9.49355 21.3678 9.29825 21.0518C9.12741 20.7752 9.02765 20.4616 9.00528 20.1387L9.0004 20V14C9.00018 13.7524 8.90772 13.5137 8.74161 13.3301L1.51602 5.34082C1.25688 5.05369 1.08667 4.69642 1.02579 4.31445C0.964975 3.93257 1.01526 3.54089 1.17227 3.1875C1.32933 2.83412 1.58635 2.53404 1.91056 2.32324C2.23469 2.11256 2.61284 2.00019 2.99942 2H21.0024L21.1469 2.00586C21.4825 2.03097 21.8071 2.14046 22.0902 2.3252C22.4139 2.53631 22.67 2.83619 22.8266 3.18945C22.9831 3.54264 23.034 3.93396 22.9731 4.31543C22.9121 4.6969 22.7416 5.05301 22.4828 5.33984L22.4818 5.34082L15.2592 13.3301C15.0932 13.5137 15.0006 13.7525 15.0004 14V21Z" fill="currentColor"/>
+              </svg>
+              <select id="filtroCategoria" aria-label="Filtrar por categoria">
+                <option value="">Selecione...</option>
+                <option value="Eletrônicos">Eletrônicos</option>
+                <option value="Móveis">Móveis</option>
+                <option value="Vestuário">Vestuário</option>
+                <option value="Alimentos">Alimentos</option>
+                <option value="Papelaria">Papelaria</option>
+                <option value="Outros">Outros</option>
+              </select>
+              <button type="button" class="filtro__limpar" id="btnLimparFiltro" aria-label="Limpar filtro" hidden>×</button>
+            </label>
+            <button type="button" class="btn btn--primario" id="btnNovoProduto">Novo Cadastro</button>
+          </div>
+        </div>
+
+        <div class="tabela-wrap">
+          <table id="tabelaProdutos">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th>Qtd.</th>
+                <th>Subtotal</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="corpoTabela">
+              <!-- linhas geradas via jQuery -->
+            </tbody>
+          </table>
+
+          <p id="listaVazia" class="lista-vazia" hidden>Nenhum produto encontrado. Cadastre o primeiro produto ao lado.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal de cadastro/edição -->
+  <div id="modalProduto" class="modal" hidden>
+    <div class="modal__caixa modal__caixa--form">
+      <div class="modal__header">
+        <h3 id="formTitulo">Novo produto</h3>
+        <button type="button" class="btn btn--icone modal__close" id="btnFecharModalProduto" aria-label="Fechar modal">✕</button>
+      </div>
+
+      <form id="formProduto" novalidate>
+        <input type="hidden" id="produtoId" />
+
+        <div class="campo">
+          <label for="codigo">Código</label>
+          <input type="text" id="codigo" placeholder="Ex: PRD-001" autocomplete="off" />
+          <span class="erro" id="erroCodigo"></span>
+        </div>
+
+        <div class="campo">
+          <label for="nome">Nome do produto</label>
+          <input type="text" id="nome" placeholder="Ex: Cadeira gamer" autocomplete="off" />
+          <span class="erro" id="erroNome"></span>
+        </div>
+
+        <div class="campo">
+          <label for="categoria">Categoria</label>
+          <select id="categoria">
+            <option value="">Selecione...</option>
+            <option value="Eletrônicos">Eletrônicos</option>
+            <option value="Móveis">Móveis</option>
+            <option value="Vestuário">Vestuário</option>
+            <option value="Alimentos">Alimentos</option>
+            <option value="Papelaria">Papelaria</option>
+            <option value="Outros">Outros</option>
+          </select>
+          <span class="erro" id="erroCategoria"></span>
+        </div>
+
+        <div class="campo-linha">
+          <div class="campo">
+            <label for="preco">Preço (R$)</label>
+            <input type="number" id="preco" min="0" step="0.01" placeholder="0,00" />
+            <span class="erro" id="erroPreco"></span>
+          </div>
+
+          <div class="campo">
+            <label for="quantidade">Qtd. em estoque</label>
+            <input type="number" id="quantidade" min="0" step="1" placeholder="0" />
+            <span class="erro" id="erroQuantidade"></span>
+          </div>
+        </div>
+
+        <div class="acoes-form">
+          <button type="submit" class="btn btn--primario" id="btnSalvar">Cadastrar produto</button>
+          <button type="button" class="btn btn--ghost" id="btnCancelar" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação de exclusão -->
+  <div id="modalConfirmar" class="modal" hidden>
+    <div class="modal__caixa">
+      <h3>Excluir produto?</h3>
+      <p>Tem certeza que deseja excluir <strong id="modalNomeProduto"></strong>? Essa ação não pode ser desfeita.</p>
+      <div class="modal__acoes">
+        <button type="button" class="btn btn--ghost" id="btnCancelarExclusao">Cancelar</button>
+        <button type="button" class="btn btn--perigo" id="btnConfirmarExclusao">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalDetalheProduto" class="modal" hidden>
+    <div class="modal__caixa modal__caixa--detalhe">
+      <div class="modal__header">
+        <h3>Detalhes do produto</h3>
+        <button type="button" class="btn btn--icone modal__close" id="btnFecharDetalheProduto" aria-label="Fechar detalhes">✕</button>
+      </div>
+
+      <div class="detalhe__lista">
+        <div class="detalhe__item">
+          <span>Código</span>
+          <strong id="detalheCodigo">-</strong>
+        </div>
+        <div class="detalhe__item">
+          <span>Nome</span>
+          <strong id="detalheNome">-</strong>
+        </div>
+        <div class="detalhe__item">
+          <span>Categoria</span>
+          <strong id="detalheCategoria">-</strong>
+        </div>
+        <div class="detalhe__item">
+          <span>Preço</span>
+          <strong id="detalhePreco">-</strong>
+        </div>
+        <div class="detalhe__item">
+          <span>Quantidade</span>
+          <strong id="detalheQuantidade">-</strong>
+        </div>
+        <div class="detalhe__item">
+          <span>Subtotal</span>
+          <strong id="detalheSubtotal">-</strong>
+        </div>
+      </div>
+
+      <div class="modal__acoes modal__acoes--detalhe">
+        <button type="button" class="btn btn--ghost" id="btnFecharDetalhe">Fechar</button>
+        <button type="button" class="btn btn--primario" id="btnIrParaEdicao">Editar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de feedback -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
